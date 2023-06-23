@@ -1,10 +1,11 @@
 <?php
 
-namespace Meneses\LaravelMpdf;
+namespace Mccarlosen\LaravelMpdf;
 
-use Illuminate\Support\Facades\Config;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Traits\Macroable;
 
 /**
  * Laravel Mpdf: mPDF wrapper for Laravel
@@ -14,6 +15,7 @@ use Mpdf\Output\Destination;
  */
 class LaravelMpdf
 {
+    use Macroable;
 
     protected $mpdf;
     protected $config = [];
@@ -64,8 +66,8 @@ class LaravelMpdf
         );
         $this->mpdf->SetDisplayMode($this->getConfig('display_mode'));
 
-        $this->mpdf->PDFA               = $this->getConfig('pdfa') ?? false;
-        $this->mpdf->PDFAauto           = $this->getConfig('pdfaauto') ?? false;
+        $this->mpdf->PDFA               = $this->getConfig('pdfa') ?: false;
+        $this->mpdf->PDFAauto           = $this->getConfig('pdfaauto') ?: false;
         $this->mpdf->showWatermarkText  = $this->getConfig('show_watermark');
         $this->mpdf->showWatermarkImage = $this->getConfig('show_watermark_image');
         $this->mpdf->watermark_font     = $this->getConfig('watermark_font');
@@ -76,7 +78,7 @@ class LaravelMpdf
 
     protected function getConfig($key)
     {
-        return $this->config[$key] ?? Config::get('pdf.' . $key);
+        return isset($this->config[$key]) ? $this->config[$key] : Config::get('pdf.' . $key);
     }
 
     /**
